@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from . import config
+from .callback import router as callback_router, stream_reply
 from .personas import get_persona, list_public
 from .providers.llm import get_llm_client
 from .providers.retrieval import get_retriever
@@ -33,6 +34,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 云端智能体回调:会话编排云服务把 ASR 文本回调到这里,本服务流式返回文本
+app.include_router(callback_router)
 
 
 @app.get("/api/health")
@@ -69,7 +73,7 @@ async def chat(req: ChatRequest):
     async def sse():
         try:
             async with asyncio.timeout(REPLY_TIMEOUT):
-                async for chunk in llm.chat_stream(persona, messages, context):
+                async for chunk in stream_reply(persona, messages):
                     frame = json.dumps({"delta": chunk}, ensure_ascii=False)
                     yield f"data: {frame}\n\n"
         except asyncio.TimeoutError:

@@ -1,5 +1,9 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadDotEnv } from './env.js';
+
+// 支持服务目录下 .env 文件(已存在的环境变量优先)
+loadDotEnv();
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 

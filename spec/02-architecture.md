@@ -35,8 +35,13 @@
 
 - `GET /api/personas`、`GET /api/health`
 - `POST /api/chat`:`{personaId, messages:[{role, content}], stream?}`;`stream=true` 时以 SSE 返回 `data: {"delta": "..."}`,终止帧 `data: [DONE]`;否则一次性 JSON
-- LLM 缝口:环境变量 `LLM_BASE_URL` 未设置时用 `MockPersonaLLM`(按人设模板合成回复);设置后走 OpenAI 兼容接口(`LLM_API_KEY`、`LLM_MODEL` 可配)
-- 检索缝口:`KeywordRetriever` 对 `ai-service/data/knowledge/*.md` 做关键词打分;命中片段注入 prompt 上下文
+- `POST /api/callback`:云端智能体回调端点(接入真实供应商后,会话编排云服务把 ASR 文本回调至此);请求兼容 `{"messages":[...]}` 与 `{"text":"..."}` 两种形态,响应 SSE 帧为 `data: {"content": "..."}`,终止帧 `[DONE]`;字段解析与帧格式收敛在 `app/callback.py`,便于联调对齐
+- LLM 缝口:环境变量 `LLM_BASE_URL` 未设置时用 `MockPersonaLLM`(按人设模板合成回复);设置后走 OpenAI 兼容接口(`LLM_API_KEY`、`LLM_MODEL`、`LLM_TEMPERATURE` 默认 0.3、`LLM_MAX_TOKENS` 可配)
+- 检索缝口:默认 `KeywordRetriever`(本地 `data/knowledge/*.md` 最长公共子串打分);设置 `KB_BASE_URL` 后切换 `RemoteKnowledgeRetriever`(托管知识服务,HTTP 契约 `POST {query, top_k} → {chunks:[{content}]}`,失败降级为无注入)
+
+### .env 约定
+
+server 与 ai-service 启动时自动加载各自目录下的 `.env`(已存在的环境变量优先于文件);`.env.example` 为模板,密钥一律留空不入库。接入回调模式后,ai-service 需公网可达(开发态用 ngrok 等内网穿透),且 **重启 ai-service 前先挂断房间**(它在通话链路上)。
 
 ## web — 前端
 

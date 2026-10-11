@@ -19,6 +19,15 @@ When 以 `stream:true` 调 `/api/chat`,Then 响应为 SSE,含 ≥ 2 个 `data:` 
 ### ACC-005 检索注入
 Given `ai-service/data/knowledge/` 存在含「请假」的文档,When 问「公司请假流程是什么」,Then mock 大脑回复包含该文档中的关键句(证明 Retriever 生效)。
 
+### ACC-011 云端回调端点
+Given ai-service 已启动,When `POST /api/callback`(两种请求形态任一),Then 响应为 SSE,帧为 `data: {"content": "..."}`,最后一帧 `[DONE]`;请求体缺文本时返回 400;`personaId` 非法返回 404。
+
+### ACC-012 .env 加载
+Given `server/.env` 写入 `PORT=8899`,When `npm start`,Then 网关监听 8899;ai-service 同理(以 `LLM_TEMPERATURE` 写入 .env 后 `/api/health` 正常、回复管线可用为证)。
+
+### ACC-013 托管知识库适配
+Given 一个返回 `{"chunks":[{"content":"..."}]}` 的 HTTP stub 作为 `KB_BASE_URL`,When ai-service 以该配置启动并问「公司请假流程」,Then 回复包含 stub 返回的片段(证明 RemoteKnowledgeRetriever 生效);stub 不可用时回复不报错(降级为无注入)。
+
 ### ACC-006 首页画廊
 Given 三个服务已启动,When 打开 `/`,Then 渲染 ≥ 3 张人设卡(头像、名字、定位、快捷问题 chips),来源为 `GET /api/scenes`。
 

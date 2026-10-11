@@ -5,9 +5,19 @@
 ## 当前状态
 
 - 日期:2026-10-12
-- 阶段:首版完成;独立验收 20/20 PASS;已推送远端
-- 分支:`main` → `origin/main`(github.com/lyndonxn/ai_company,私有)
-- 提交:f72ff82 → 24b74b5(5 个切片提交:脚手架/server/ai-service/web/ci)
+- 阶段:已对齐课程文档《AI语音对话-智能客服项目》的架构要求(回调端点/.env/托管知识库缝口/生成参数);全部验证通过并推送
+- 分支:`main` → `origin/main`(github.com/lyndonxn/ai_company,公开)
+
+## 本轮变更(2026-10-12 第二轮)
+
+- `POST /api/callback` 云端回调端点:SSE `content` 帧 + `[DONE]`,请求兼容 messages/text 两种形态;字段解析与帧格式收敛在 `ai-service/app/callback.py`(联调时只对齐该文件)
+- 两个服务启动时自动加载各自目录 `.env`(已存在环境变量优先):`server/src/env.js`、`ai-service/app/config.py`
+- LLM 生成参数可配:`LLM_TEMPERATURE`(默认 0.3)、`LLM_MAX_TOKENS`
+- 托管知识库适配位:`RemoteKnowledgeRetriever`(HTTP 契约 `POST {query, top_k} → {chunks:[{content}]}`,`KB_BASE_URL` 启用,失败降级);本机地址自动绕过系统代理(`app/net.py`,解决 Clash 类代理拦截 localhost 的 502)
+- 文档:provider-integration 增加「两种会话形态 + 回调 + ngrok + 重启前挂断房间」;spec/02、spec/03(ACC-011~013)、AGENTS 同步
+- 实测:callback 双形态 SSE ✓、400/404 语义 ✓、KB 注入与降级 ✓、.env 端口生效 ✓、server 冒烟 ✓、web 构建 ✓
+- 待用户接入:真实供应商凭证(.env 填值)、托管知识库 API 适配(按 3.2 契约包一层)、回调字段与云服务联调对齐(`app/callback.py`)
+
 
 ## 已完成(附证据)
 

@@ -15,6 +15,7 @@ import httpx
 
 from ..personas import PersonaProfile
 from .. import config
+from ..net import is_loopback
 
 _PUNCT = re.compile(r"[\s,。!.?:;、,!?~～\"'“”‘’()()【】\[\]]+")
 
@@ -123,10 +124,19 @@ class OpenAICompatLLM:
 
     name = "openai-compat"
 
-    def __init__(self, base_url: str, api_key: str, model: str) -> None:
+    def __init__(
+        self,
+        base_url: str,
+        api_key: str,
+        model: str,
+        temperature: float = 0.3,
+        max_tokens: int | None = None,
+    ) -> None:
         self._base_url = base_url.rstrip("/")
         self._api_key = api_key
         self._model = model
+        self._temperature = temperature
+        self._max_tokens = max_tokens
 
     async def chat_stream(
         self,
@@ -140,10 +150,14 @@ class OpenAICompatLLM:
         payload = {
             "model": self._model,
             "stream": True,
+            "temperature": self._temperature,
             "messages": [{"role": "system", "content": system}, *messages],
         }
+        if self._max_tokens is not None:
+            payload["max_tokens"] = self._max_tokens
         headers = {"Authorization": f"Bearer {self._api_key}"} if self._api_key else {}
-        async with httpx.AsyncClient(timeout=60) as client:
+        # 本机网关(如本地 vLLM/Ollama)不走系统代理;远程接口保留系统代理
+        async with httpx.AsyncClient(timeout=60, trust_env=not is_loopback(self._base_url)) as client:
             async with client.stream(
                 "POST", f"{self._base_url}/chat/completions", json=payload, headers=headers
             ) as resp:
@@ -164,5 +178,11 @@ class OpenAICompatLLM:
 
 def get_llm_client() -> LLMClient:
     if config.LLM_BASE_URL:
-        return OpenAICompatLLM(config.LLM_BASE_URL, config.LLM_API_KEY, config.LLM_MODEL or "default")
+        return OpenAICompatLLM(
+            config.LLM_BASE_URL,
+            config.LLM_API_KEY,
+            config.LLM_MODEL or "default",
+            temperature=config.LLM_TEMPERATURE,
+            max_tokens=config.LLM_MAX_TOKENS,
+        )
     return MockPersonaLLM()
