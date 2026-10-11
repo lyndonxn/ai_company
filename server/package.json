@@ -1,0 +1,19 @@
+{
+  "name": "@ai-company/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI Company 会话网关:人设配置下发与会话生命周期管理",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
