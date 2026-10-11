@@ -28,7 +28,7 @@
 ## 未完成 / 待用户决策
 
 - 真实语音供应商与大模型供应商接入(用户自行测试补充):按 `docs/provider-integration.md` 三步走,需填 `server/.env`、`web/.env.local`、ai-service 的 `LLM_BASE_URL` 等环境变量
-- 仓库可见性:计划以 **private** 创建;如需公开执行 `gh repo edit lyndonxn/ai_company --visibility public --accept-visibility-change-consequences`
+- 仓库可见性:**public**(2026-10-12 由用户确认公开);后续提交仍需遵守 AGENTS.md 的安全约束,任何真实凭据不得入库
 
 ## 环境清单(一次性盘点,勿重复执行)
 
