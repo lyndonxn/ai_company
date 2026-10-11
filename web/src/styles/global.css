@@ -1,0 +1,73 @@
+:root {
+  /* 色板:深空蓝紫 */
+  --bg-0: #070a14;
+  --bg-1: #0c1224;
+  --bg-2: #111a33;
+  --panel: rgba(255, 255, 255, 0.055);
+  --panel-strong: rgba(255, 255, 255, 0.09);
+  --stroke: rgba(255, 255, 255, 0.09);
+  --stroke-strong: rgba(255, 255, 255, 0.16);
+  --text-1: #eef1fa;
+  --text-2: #a7afc6;
+  --text-3: #6d7690;
+  --primary: #5b8cff;
+  --accent: #8a5bff;
+  --danger: #ff5b7f;
+  --ok: #34d399;
+  --warn: #f5b74e;
+  --radius-l: 20px;
+  --radius-m: 14px;
+  --radius-s: 10px;
+  --grad-brand: linear-gradient(135deg, var(--primary), var(--accent));
+  --shadow-card: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --font: 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'Segoe UI',
+    system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text-1);
+  background:
+    radial-gradient(1200px 700px at 12% -10%, rgba(91, 140, 255, 0.16), transparent 60%),
+    radial-gradient(1000px 600px at 88% 110%, rgba(138, 91, 255, 0.14), transparent 60%),
+    linear-gradient(160deg, var(--bg-1), var(--bg-0) 55%, #05070f);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(91, 140, 255, 0.35);
+}
+
+/* 细滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
