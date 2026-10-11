@@ -37,7 +37,7 @@
 
 ## 未完成 / 待用户决策
 
-- 真实语音供应商与大模型供应商接入(用户自行测试补充):按 `docs/provider-integration.md` 三步走,需填 `server/.env`、`web/.env.local`、ai-service 的 `LLM_BASE_URL` 等环境变量
+- **火山引擎 API 尚未开通(用户确认,2026-10-12)**:回调接入、真实 RTC/ASR/TTS、托管知识库均暂缓;当前仓库不依赖任何供应商凭证,mock 模式离线可完整运行。开通后按 `docs/provider-integration.md` 三步接入(填 `.env` → 适配托管知识库 → 联调回调字段,后者只需改 `ai-service/app/callback.py`)
 - 仓库可见性:**public**(2026-10-12 由用户确认公开);后续提交仍需遵守 AGENTS.md 的安全约束,任何真实凭据不得入库
 
 ## 环境清单(一次性盘点,勿重复执行)
