@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+.uv-cache/
+
+# build output
+dist/
+build/
+
+# env & secrets
+.env
+.env.local
+.env.*.local
+
+# editor / os
+.idea/
+.vscode/
+.DS_Store
+*.log
+
+# local tooling
+.zcodeignore
